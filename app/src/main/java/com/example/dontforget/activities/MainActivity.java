@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static final int REQUEST_CODE_ADD_NOTE = 1;
+    public static final int REQUEST_CODE_ADD_REMINDER = 1;
 
     private RecyclerView notesRecyclerView;
     private List<Note> noteList;
@@ -51,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
         notesRecyclerView.setAdapter(notesAdapter);
 
         getNotes();
+
+        ImageView imageAddAlert = findViewById(R.id.imageAddAlert);
+        imageAddAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getApplicationContext(), CreateReminderActivity.class), REQUEST_CODE_ADD_REMINDER);
+            }
+        });
     }
 
     @Override

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".activities.CreateReminderActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <ImageView
+                android:id="@+id/imageBack"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_back"
+                app:tint="@color/colorIcons"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:layout_marginStart="@dimen/_6sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+
+                />
+
+            <ImageView
+                android:id="@+id/imageSave"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_done"
+                android:background="@drawable/background_done_button"
+                app:tint="@color/colorIcons" />
+
+            <EditText
+                android:id="@+id/reminderTitle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:fontFamily="@font/ubuntu_bold"
+                android:textSize="@dimen/_16ssp"
+                android:inputType="text"
+                android:hint="@string/reminder_title"
+                android:importantForAutofill="no"
+                android:textColor="@color/white"
+                android:background="@null"
+                android:includeFontPadding="false"
+                android:textColorHint="@color/colorTextHint"
+                android:imeOptions="actionDone"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
+                />
+
+            <TextView
+                android:id="@+id/dateTimeText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:paddingTop="@dimen/_3sdp"
+                android:fontFamily="@font/ubuntu_medium"
+                android:textSize="@dimen/_12ssp"
+                android:text="Select date and time"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/reminderTitle"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/dateTimeText"
+                app:layout_constraintStart_toStartOf="parent">
+                <ImageView
+                    android:id="@+id/calendarIcon"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/colorIcons" />
+
+                <EditText
+                    android:id="@+id/calendarText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:includeFontPadding="false"
+                    android:fontFamily="@font/ubuntu_medium"
+                    android:inputType="datetime"
+                    android:hint="insert date here"
+                    android:textColorHint="@color/colorTextHint"
+                    android:textColor="@color/white"
+                    android:importantForAutofill="no"
+                    android:background="@null"
+                    android:imeOptions="actionDone"/>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,4 +7,5 @@
     <string name="type_note_here">Type Note Here</string>
     <string name="miscellanous">Miscellanous</string>
     <string name="pick_color">Pick Color</string>
+    <string name="reminder_title">Reminder title</string>
 </resources>
