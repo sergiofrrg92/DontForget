@@ -2,12 +2,16 @@ package com.example.dontforget.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +27,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
     public static final int REQUEST_CODE_ADD_NOTE = 1;
     public static final int REQUEST_CODE_ADD_REMINDER = 1;
 
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //The sooner this is run, the better, it is safe to rerun
+        createNotificationChannel();
 
         ImageView imageAddNoteMain = findViewById(R.id.imageAddNoteMain);
         imageAddNoteMain.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +66,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(getApplicationContext(), CreateReminderActivity.class), REQUEST_CODE_ADD_REMINDER);
             }
         });
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        //taken from https://developer.android.com/training/notify-user/build-notification?hl=en#java
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override

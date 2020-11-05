@@ -1,11 +1,19 @@
 package com.example.dontforget.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.example.dontforget.R;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -35,6 +43,35 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         setTimePickerLogic();
 
+        setSaveLogic();
+
+    }
+
+
+    private void setSaveLogic() {
+        //following https://developer.android.com/training/notify-user/build-notification?hl=en#java
+        ImageView imageSave = findViewById(R.id.imageSave);
+        imageSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an explicit intent for an Activity in your app
+                Intent intent = new Intent(CreateReminderActivity.this, CreateReminderActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(CreateReminderActivity.this, 0, intent, 0);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_name))
+                        .setSmallIcon(R.drawable.ic_clock)
+                        .setContentTitle("Reminder")
+                        .setContentText("This is the content of the reminder")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(CreateReminderActivity.this);
+
+                // notificationId is a unique int for each notification that you must define
+                notificationManager.notify(1, builder.build());
+            }
+
+        });
     }
 
 
