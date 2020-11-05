@@ -8,4 +8,6 @@
     <string name="miscellanous">Miscellanous</string>
     <string name="pick_color">Pick Color</string>
     <string name="reminder_title">Reminder title</string>
+    <string name="insert_time_here">Insert time here</string>
+    <string name="insert_date_here">Insert date here</string>
 </resources>
