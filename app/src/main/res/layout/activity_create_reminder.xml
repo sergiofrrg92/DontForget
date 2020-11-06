@@ -113,7 +113,8 @@
                     android:textColor="@color/white"
                     android:importantForAutofill="no"
                     android:background="@null"
-                    android:imeOptions="actionDone"/>
+                    android:imeOptions="actionDone"
+                    />
 
             </LinearLayout>
 

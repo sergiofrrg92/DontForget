@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -30,38 +31,86 @@ import java.util.Locale;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
+    private ImageView imageBack;
+    //Elements in the layout
+    private ImageView calendarIcon;
+    private EditText calendarText;
 
+    private ImageView timeIcon;
+    private EditText timeText;
+
+    private final Calendar calendar = Calendar.getInstance();
+
+    private EditText reminderTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_reminder);
 
+        imageBack = findViewById(R.id.imageBack);
+        //Elements in the layout
+        calendarIcon = findViewById(R.id.calendarIcon);
+        calendarText = findViewById(R.id.calendarText);
+
+        calendarText.setShowSoftInputOnFocus(false);
+
+        timeIcon = findViewById(R.id.timeIcon);
+        timeText = findViewById(R.id.timeText);
+
+        timeText.setShowSoftInputOnFocus(false);
+
+        reminderTitle = findViewById(R.id.reminderTitle);
+
+        createNotificationChannel();
         setImageBackLogic();
-
         setDatePickerLogic();
-
         setTimePickerLogic();
-
         setSaveLogic();
 
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        //taken from https://developer.android.com/training/notify-user/build-notification?hl=en#java
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH; //Should this be a parameter inserted by the user?
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     private void setSaveLogic() {
+
+
         //following https://developer.android.com/training/notify-user/build-notification?hl=en#java
         ImageView imageSave = findViewById(R.id.imageSave);
         imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(reminderTitle.getText().toString().trim().isEmpty()){
+                    Toast.makeText(CreateReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()){
+                    Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 // Create an explicit intent for an Activity in your app
                 Intent intent = new Intent(CreateReminderActivity.this, CreateReminderActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(CreateReminderActivity.this, 0, intent, 0);
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_name))
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_id))
                         .setSmallIcon(R.drawable.ic_clock)
-                        .setContentTitle("Reminder")
+                        .setContentTitle("Don´t forget it!")
                         .setContentText("This is the content of the reminder")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
@@ -76,7 +125,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
 
     private void setImageBackLogic(){
-        ImageView imageBack = findViewById(R.id.imageBack);
+
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,12 +135,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     }
 
     private void setDatePickerLogic(){
-        //Calendar to create the date
-        final Calendar calendar = Calendar.getInstance();
 
-        //Elements in the layout
-        ImageView calendarIcon = findViewById(R.id.calendarIcon);
-        EditText calendarText = findViewById(R.id.calendarText);
 
         //Listening to when a date is picked
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
@@ -125,9 +169,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     }
 
     private void setTimePickerLogic() {
-        final Calendar calendar = Calendar.getInstance();
-        ImageView timeIcon = findViewById(R.id.timeIcon);
-        EditText timeText = findViewById(R.id.timeText);
+
 
         TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
             @Override
