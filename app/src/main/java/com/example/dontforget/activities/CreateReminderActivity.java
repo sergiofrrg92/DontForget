@@ -88,6 +88,16 @@ public class CreateReminderActivity extends AppCompatActivity {
     }
 
     private void setSaveLogic() {
+        ImageView imageSave = findViewById(R.id.imageSave);
+        imageSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    private void triggerNotificationLogic() {   //TODO: This notification system needs to be scheduled, a new layout and activitiy for reminder details and must be created
 
 
         //following https://developer.android.com/training/notify-user/build-notification?hl=en#java
@@ -112,6 +122,8 @@ public class CreateReminderActivity extends AppCompatActivity {
                         .setSmallIcon(R.drawable.ic_clock)
                         .setContentTitle("Don´t forget it!")
                         .setContentText("This is the content of the reminder")
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true) //To make it disappear, not what I want I think
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(CreateReminderActivity.this);
