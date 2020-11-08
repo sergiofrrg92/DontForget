@@ -5,7 +5,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.dontforget.R;
+import com.example.dontforget.database.NotesDatabase;
+import com.example.dontforget.database.RemindersDatabase;
+import com.example.dontforget.entities.Reminder;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
@@ -13,6 +17,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +40,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     //Elements in the layout
     private ImageView calendarIcon;
     private EditText calendarText;
+    private EditText reminderDescription;
 
     private ImageView timeIcon;
     private EditText timeText;
@@ -52,6 +58,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         //Elements in the layout
         calendarIcon = findViewById(R.id.calendarIcon);
         calendarText = findViewById(R.id.calendarText);
+        reminderDescription = findViewById(R.id.reminderDescription);
 
         calendarText.setShowSoftInputOnFocus(false);
 
@@ -92,6 +99,40 @@ public class CreateReminderActivity extends AppCompatActivity {
         imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(reminderTitle.getText().toString().trim().isEmpty()){
+                    Toast.makeText(CreateReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()){
+                    Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Reminder reminder = new Reminder();
+
+                reminder.setTitle(reminderTitle.getText().toString());
+                reminder.setDate(calendarText.getText().toString());
+                reminder.setTime(timeText.getText().toString());
+                reminder.setDescription(reminderDescription.getText().toString());
+
+                @SuppressLint("StaticFieldLeak")
+                class SaveReminderTask extends AsyncTask<Void, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().insertReminder(reminder);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }
+
+                new SaveReminderTask().execute();
 
             }
         });
