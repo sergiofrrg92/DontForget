@@ -10,6 +10,7 @@ import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
@@ -94,15 +95,45 @@ public class CreateReminderActivity extends AppCompatActivity {
         }
     }
 
+    private void setScheduledReminder() {   //TODO: This notification system needs to be scheduled, a new layout and activitiy for reminder details and must be created
+
+
+
+        // Create an explicit intent for an Activity in your app
+        Intent intent = new Intent(CreateReminderActivity.this, CreateReminderActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(CreateReminderActivity.this, 0, intent, 0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_id))
+                .setSmallIcon(R.drawable.ic_clock)
+                .setContentTitle("Don´t forget it!")
+                .setContentText("This is the content of the reminder")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true) //To make it disappear, not what I want I think
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(CreateReminderActivity.this);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, builder.build());*/
+
+
+
+
+    }
+
     private void setSaveLogic() {
         ImageView imageSave = findViewById(R.id.imageSave);
         imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(reminderTitle.getText().toString().trim().isEmpty()){
+                if (reminderTitle.getText().toString().trim().isEmpty()) {
                     Toast.makeText(CreateReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
                     return;
-                }else if(calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()){
+                } else if (calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()) {
                     Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -131,48 +162,10 @@ public class CreateReminderActivity extends AppCompatActivity {
                         finish();
                     }
                 }
-
+                setScheduledReminder();
                 new SaveReminderTask().execute();
 
             }
-        });
-    }
-
-    private void triggerNotificationLogic() {   //TODO: This notification system needs to be scheduled, a new layout and activitiy for reminder details and must be created
-
-
-        //following https://developer.android.com/training/notify-user/build-notification?hl=en#java
-        ImageView imageSave = findViewById(R.id.imageSave);
-        imageSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(reminderTitle.getText().toString().trim().isEmpty()){
-                    Toast.makeText(CreateReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
-                    return;
-                }else if(calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()){
-                    Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // Create an explicit intent for an Activity in your app
-                Intent intent = new Intent(CreateReminderActivity.this, CreateReminderActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(CreateReminderActivity.this, 0, intent, 0);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_id))
-                        .setSmallIcon(R.drawable.ic_clock)
-                        .setContentTitle("Don´t forget it!")
-                        .setContentText("This is the content of the reminder")
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true) //To make it disappear, not what I want I think
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(CreateReminderActivity.this);
-
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(1, builder.build());
-            }
-
         });
     }
 
