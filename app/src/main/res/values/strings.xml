@@ -11,7 +11,7 @@
     <string name="insert_time_here">Insert time here</string>
     <string name="insert_date_here">Insert date here</string>
     <string name="insert_reminder_description">Insert Reminder Description</string>
-    <string name="channel_id">CHANNEL_ID</string>
+    <string name="channel_id">ReminderChannel</string>
     <string name="channel_name">Reminder channel</string>
     <string name="channel_description">Channel for reminders</string>
 </resources>

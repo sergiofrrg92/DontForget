@@ -5,6 +5,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.dontforget.R;
+import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.database.NotesDatabase;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
@@ -17,10 +18,12 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -49,6 +52,9 @@ public class CreateReminderActivity extends AppCompatActivity {
     private final Calendar calendar = Calendar.getInstance();
 
     private EditText reminderTitle;
+
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,31 +103,11 @@ public class CreateReminderActivity extends AppCompatActivity {
 
     private void setScheduledReminder() {   //TODO: This notification system needs to be scheduled, a new layout and activitiy for reminder details and must be created
 
+        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-
-        // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(CreateReminderActivity.this, CreateReminderActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getActivity(CreateReminderActivity.this, 0, intent, 0);
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
-        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(CreateReminderActivity.this, getString(R.string.channel_id))
-                .setSmallIcon(R.drawable.ic_clock)
-                .setContentTitle("Don´t forget it!")
-                .setContentText("This is the content of the reminder")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true) //To make it disappear, not what I want I think
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(CreateReminderActivity.this);
-
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, builder.build());*/
-
-
-
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
     }
 
