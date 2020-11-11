@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatterBuilder;
@@ -101,10 +102,13 @@ public class CreateReminderActivity extends AppCompatActivity {
         }
     }
 
-    private void setScheduledReminder() {   //TODO: This notification system needs to be scheduled, a new layout and activitiy for reminder details and must be created
+    private void setScheduledReminder(Reminder reminder) {   //TODO: This notifiTcation system needs to be scheduled, a new layout and activitiy for reminder details and must be created
 
         alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
+        Bundle args = new Bundle();
+        args.putSerializable("reminderInfo", (Serializable)reminder);
+        intent.putExtra("REMINDER", args);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
         alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
@@ -148,7 +152,7 @@ public class CreateReminderActivity extends AppCompatActivity {
                         finish();
                     }
                 }
-                setScheduledReminder();
+                setScheduledReminder(reminder);
                 new SaveReminderTask().execute();
 
             }
