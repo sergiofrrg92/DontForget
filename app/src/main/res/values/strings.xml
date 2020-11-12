@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">DontForget</string>
-    <string name="my_notes">My Notes</string>
-    <string name="search_notes">Search Notes</string>
+    <string name="my_reminders">My Reminders</string>
     <string name="note_title">Note Title</string>
     <string name="note_subtitle">Note subtitle</string>
     <string name="type_note_here">Type Note Here</string>
@@ -14,4 +13,5 @@
     <string name="channel_id">ReminderChannel</string>
     <string name="channel_name">Reminder channel</string>
     <string name="channel_description">Channel for reminders</string>
+    <string name="search_reminders">Search Reminders</string>
 </resources>

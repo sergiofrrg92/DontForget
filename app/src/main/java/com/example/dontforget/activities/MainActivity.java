@@ -46,22 +46,13 @@ public class MainActivity extends AppCompatActivity {
         //The sooner this is run, the better, it is safe to rerun
         //deleteAllReminders();
         deleteOverdueReminders();
-        ImageView imageAddNoteMain = findViewById(R.id.imageAddNoteMain);
-        imageAddNoteMain.setOnClickListener(new View.OnClickListener() {
+        ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
+        imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getApplicationContext(), CreateNoteActivity.class), REQUEST_CODE_ADD_NOTE);
+                startActivityForResult(new Intent(getApplicationContext(), CreateReminderActivity.class), REQUEST_CODE_ADD_REMINDER);
             }
         });
-
-        /*notesRecyclerView = findViewById(R.id.notesRecyclerView);
-        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        noteList= new ArrayList<>();
-        notesAdapter = new NotesAdapter(noteList);
-        notesRecyclerView.setAdapter(notesAdapter);
-
-        getNotes();*/
 
         remindersRecyclerView = findViewById(R.id.notesRecyclerView);
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -72,13 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         getReminders();
 
-        ImageView imageAddAlert = findViewById(R.id.imageAddAlert);
-        imageAddAlert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getApplicationContext(), CreateReminderActivity.class), REQUEST_CODE_ADD_REMINDER);
-            }
-        });
     }
 
     private void deleteOverdueReminders() {

@@ -16,7 +16,7 @@
         android:layout_marginEnd="@dimen/_12sdp"
         android:fontFamily="@font/ubuntu_bold"
         android:includeFontPadding="false"
-        android:text="@string/my_notes"
+        android:text="@string/my_reminders"
         android:textColor="@color/white"
         android:textSize="@dimen/_20ssp"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +49,7 @@
             android:layout_marginStart="@dimen/_12sdp"
             android:background="@null"
             android:fontFamily="@font/ubuntu_regular"
-            android:hint="@string/search_notes"
+            android:hint="@string/search_reminders"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:includeFontPadding="false"
@@ -124,7 +124,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageAddNoteMain"
+        android:id="@+id/imageAddReminderMain"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginEnd="@dimen/_30sdp"
