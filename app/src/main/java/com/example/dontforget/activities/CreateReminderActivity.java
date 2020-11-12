@@ -47,6 +47,8 @@ public class CreateReminderActivity extends AppCompatActivity {
     private EditText calendarText;
     private EditText reminderDescription;
 
+    private String datetime;
+
     private ImageView timeIcon;
     private EditText timeText;
 
@@ -76,6 +78,8 @@ public class CreateReminderActivity extends AppCompatActivity {
         timeText.setShowSoftInputOnFocus(false);
 
         reminderTitle = findViewById(R.id.reminderTitle);
+
+        datetime = "";
 
         createNotificationChannel();
         setImageBackLogic();
@@ -130,9 +134,13 @@ public class CreateReminderActivity extends AppCompatActivity {
 
                 Reminder reminder = new Reminder();
 
+                datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        .format(calendar.getTime());
+
                 reminder.setTitle(reminderTitle.getText().toString());
                 reminder.setDate(calendarText.getText().toString());
                 reminder.setTime(timeText.getText().toString());
+                reminder.setDatetime(datetime);
                 reminder.setDescription(reminderDescription.getText().toString());
 
                 @SuppressLint("StaticFieldLeak")

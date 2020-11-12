@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         //The sooner this is run, the better, it is safe to rerun
         //deleteAllReminders();
+        deleteOverdueReminders();
         ImageView imageAddNoteMain = findViewById(R.id.imageAddNoteMain);
         imageAddNoteMain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +80,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void deleteOverdueReminders() {
+        @SuppressLint("StaticFieldLeak")
+        class DeleteOverdueRemindersTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteOverdueReminders();
+                return null;
+            }
+
+        }
+
+        new DeleteOverdueRemindersTask().execute();
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

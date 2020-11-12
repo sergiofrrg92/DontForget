@@ -22,6 +22,9 @@ public class Reminder implements Serializable {
     @ColumnInfo(name = "time")
     private String time;
 
+    @ColumnInfo(name = "datetime")
+    private String datetime;
+
     @ColumnInfo(name = "description")
     private String description;
 
@@ -55,6 +58,14 @@ public class Reminder implements Serializable {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 
     public String getDescription() {

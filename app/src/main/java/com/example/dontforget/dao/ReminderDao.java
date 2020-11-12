@@ -25,6 +25,9 @@ public interface ReminderDao {
     @Query("DELETE FROM Reminders")
     void deleteAllReminders();
 
+    @Query("DELETE FROM Reminders WHERE datetime('now') > datetime")
+    void deleteOverdueReminders();
+
     @Update
     void updateReminder(Reminder reminder);
 }
