@@ -1,5 +1,7 @@
 package com.example.dontforget.adapters;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +16,20 @@ import com.example.dontforget.entities.Reminder;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> {
 
     private List<Reminder> reminders;
+    private Timer timer;
+    private List<Reminder> originReminders;
 
     public RemindersAdapter(List<Reminder> reminders){
         this.reminders = reminders;
+        this.originReminders = reminders;
     }
 
     @NonNull
@@ -68,5 +76,39 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                 reminderDescription.setText(reminder.getDescription());
 
         }
+    }
+
+
+    //I need to understand this
+    public void searchReminders(String keyword){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(keyword.trim().isEmpty()) {
+                    reminders = originReminders;
+                }else {
+                    ArrayList<Reminder> temp = new ArrayList<>();
+                    for (Reminder reminder : originReminders){
+                        if(reminder.getTitle().toLowerCase().contains(keyword.toLowerCase())
+                        || reminder.getDescription().toLowerCase().contains(keyword.toLowerCase())
+                        || reminder.getDate().toLowerCase().contains(keyword.toLowerCase()))
+                            temp.add(reminder);
+                    }
+                    reminders = temp;
+                }
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 200);
+    }
+
+    public void cancelTimer(){
+        if(timer!=null)
+            timer.cancel();
     }
 }

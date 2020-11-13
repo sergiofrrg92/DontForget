@@ -9,7 +9,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.dontforget.R;
@@ -62,6 +65,25 @@ public class MainActivity extends AppCompatActivity {
         remindersRecyclerView.setAdapter(remindersAdapter);
 
         getReminders();
+
+        EditText inputSearch = findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                remindersAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(reminderList.size()>0)
+                    remindersAdapter.searchReminders(editable.toString());
+            }
+        });
 
     }
 
