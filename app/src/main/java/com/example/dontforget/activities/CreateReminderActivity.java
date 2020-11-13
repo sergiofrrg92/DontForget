@@ -115,7 +115,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         intent.putExtra("REMINDER", args);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
     }
 
