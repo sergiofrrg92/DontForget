@@ -66,24 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         getReminders();
 
-        EditText inputSearch = findViewById(R.id.inputSearch);
-        inputSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                remindersAdapter.cancelTimer();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(reminderList.size()>0)
-                    remindersAdapter.searchReminders(editable.toString());
-            }
-        });
+        addSearchFunctionality();
 
     }
 
@@ -179,5 +162,26 @@ public class MainActivity extends AppCompatActivity {
 
         new GetNotesTask().execute();
 
+    }
+
+    private void addSearchFunctionality(){
+        EditText inputSearch = findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                remindersAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(reminderList.size()>0)
+                    remindersAdapter.searchReminders(editable.toString());
+            }
+        });
     }
 }
