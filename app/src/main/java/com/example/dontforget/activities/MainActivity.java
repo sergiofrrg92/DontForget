@@ -28,15 +28,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_ADD_NOTE = 1;
     public static final int REQUEST_CODE_ADD_REMINDER = 1;
 
-
-    private RecyclerView notesRecyclerView;
     private RecyclerView remindersRecyclerView;
-
-    private List<Note> noteList;
-    private NotesAdapter notesAdapter;
 
     private List<Reminder> reminderList;
     private RemindersAdapter remindersAdapter;
@@ -45,10 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //The sooner this is run, the better, it is safe to rerun
         //deleteAllReminders();
-        deleteOverdueReminders();
+        //deleteOverdueReminders();
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_ADD_REMINDER && resultCode == RESULT_OK){
+            getReminders();
+        }
+    }
+
     private void deleteOverdueReminders() {
         @SuppressLint("StaticFieldLeak")
         class DeleteOverdueRemindersTask extends AsyncTask<Void, Void, Void> {
@@ -87,13 +87,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK){
-            getReminders();
+    private void deleteAllReminders(){
+        @SuppressLint("StaticFieldLeak")
+        class DeleteRemindersTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteAllReminders();
+                return null;
+            }
+
         }
+
+        new DeleteRemindersTask().execute();
+
     }
+
 
     private void getReminders(){
         @SuppressLint("StaticFieldLeak")
@@ -118,49 +127,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new GetRemindersTask().execute();
-
-    }
-
-    private void deleteAllReminders(){
-        @SuppressLint("StaticFieldLeak")
-        class DeleteRemindersTask extends AsyncTask<Void, Void, Void> {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteAllReminders();
-                return null;
-            }
-
-        }
-
-        new DeleteRemindersTask().execute();
-
-    }
-
-    private void getNotes(){
-
-        @SuppressLint("StaticFieldLeak")
-        class GetNotesTask extends AsyncTask<Void, Void, List<Note>> {
-            @Override
-            protected List<Note> doInBackground(Void... voids) {
-                return NotesDatabase.getNotesDatabase(getApplicationContext()).noteDao().getAllNotes();
-            }
-
-            @Override
-            protected void onPostExecute(List<Note> notes) {
-                super.onPostExecute(notes);
-                if(noteList.size() == 0){
-                    noteList.addAll(notes);
-                    notesAdapter.notifyDataSetChanged();
-                }else{
-                    noteList.add(0, notes.get(0));
-                    notesAdapter.notifyItemInserted(0);
-                }
-                notesRecyclerView.smoothScrollToPosition(0);
-            }
-        }
-
-        new GetNotesTask().execute();
 
     }
 

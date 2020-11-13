@@ -1,5 +1,6 @@
 package com.example.dontforget.adapters;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dontforget.R;
+import com.example.dontforget.activities.CreateReminderActivity;
+import com.example.dontforget.activities.MainActivity;
 import com.example.dontforget.entities.Reminder;
 
 import org.w3c.dom.Text;
@@ -20,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> {
 
@@ -50,32 +55,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     @Override
     public int getItemCount() {
         return reminders.size();
-    }
-
-    public class ReminderViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView reminderTitle, calendarText, timeText, reminderDescription;
-
-        public ReminderViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            reminderTitle = itemView.findViewById(R.id.reminderTitle);
-            calendarText = itemView.findViewById(R.id.calendarText);
-            timeText = itemView.findViewById(R.id.timeText);
-            reminderDescription = itemView.findViewById(R.id.reminderDescription);
-
-        }
-
-        public void setReminder(Reminder reminder){
-
-            reminderTitle.setText(reminder.getTitle());
-            calendarText.setText(reminder.getDate());
-            timeText.setText(reminder.getTime());
-
-            if(!reminder.getDescription().trim().isEmpty())
-                reminderDescription.setText(reminder.getDescription());
-
-        }
     }
 
 
@@ -110,5 +89,34 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     public void cancelTimer(){
         if(timer!=null)
             timer.cancel();
+    }
+
+    public class ReminderViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView reminderTitle, calendarText, timeText, reminderDescription;
+        View mView;
+
+        public ReminderViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            reminderTitle = itemView.findViewById(R.id.reminderTitle);
+            calendarText = itemView.findViewById(R.id.calendarText);
+            timeText = itemView.findViewById(R.id.timeText);
+            reminderDescription = itemView.findViewById(R.id.reminderDescription);
+
+            mView = itemView;
+
+        }
+
+        public void setReminder(Reminder reminder){
+
+            reminderTitle.setText(reminder.getTitle());
+            calendarText.setText(reminder.getDate());
+            timeText.setText(reminder.getTime());
+
+            if(!reminder.getDescription().trim().isEmpty())
+                reminderDescription.setText(reminder.getDescription());
+
+        }
     }
 }
