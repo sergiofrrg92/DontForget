@@ -1,29 +1,15 @@
 package com.example.dontforget.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import com.example.dontforget.R;
-import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
-import com.example.dontforget.database.NotesDatabase;
-import com.example.dontforget.database.RemindersDatabase;
-import com.example.dontforget.entities.Reminder;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,15 +18,19 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.dontforget.R;
+import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
+import com.example.dontforget.database.RemindersDatabase;
+import com.example.dontforget.entities.Reminder;
+
 import java.io.Serializable;
-import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class CreateReminderActivity extends AppCompatActivity {
+public class EditReminderActivity extends AppCompatActivity {
 
     private ImageView imageBack;
     //Elements in the layout
@@ -61,8 +51,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
-    private Reminder reminderInfo;
-
+    private Reminder reminderToEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,29 +75,54 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         datetime = "";
 
-        createNotificationChannel();
+        Intent receivedIntent = getIntent();
+        Bundle args = receivedIntent.getBundleExtra("REMINDER_TO_EDIT");
+
+        if(args == null){
+            Toast.makeText(this, "Reminder information cannot be retrieved", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        reminderToEdit = (Reminder) args.getSerializable("reminderToEdit");
+
+        reminderTitle.setText(reminderToEdit.getTitle());
+        calendarText.setText(reminderToEdit.getDate());
+        timeText.setText(reminderToEdit.getTime());
+
+        if(!reminderToEdit.getDescription().trim().isEmpty()) {
+            reminderDescription.setText(reminderToEdit.getDescription());
+        }
+
+        setCalendar();  //To make sure the comparison is correct at update time
+
         setImageBackLogic();
         setDatePickerLogic();
         setTimePickerLogic();
-        setSaveLogic();
-
+        setUpdateLogic();
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        //taken from https://developer.android.com/training/notify-user/build-notification?hl=en#java
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_HIGH; //Should this be a parameter inserted by the user?
-            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+    private void setCalendar(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date date = new Date();
+
+        try {
+            date = format.parse(reminderToEdit.getDatetime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            finish();
         }
+
+        calendar.setTime(date);
+    }
+
+    private void setImageBackLogic() {
+        imageBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void setScheduledReminder(Reminder reminder) {
@@ -124,16 +138,16 @@ public class CreateReminderActivity extends AppCompatActivity {
 
     }
 
-    private void setSaveLogic() {
+    private void setUpdateLogic() {
         ImageView imageSave = findViewById(R.id.imageSave);
         imageSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (reminderTitle.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(CreateReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -148,12 +162,19 @@ public class CreateReminderActivity extends AppCompatActivity {
                 reminder.setDatetime(datetime);
                 reminder.setDescription(reminderDescription.getText().toString());
 
+                if(reminderToEdit.equals(reminder)){
+                    Toast.makeText(EditReminderActivity.this, "No editions have been made!, returning...", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
+                reminderToEdit = reminder;
+
                 @SuppressLint("StaticFieldLeak")
-                class SaveReminderTask extends AsyncTask<Void, Void, Void> {
+                class UpdateReminderTask extends AsyncTask<Void, Void, Void> {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().insertReminder(reminder);
+                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().updateReminder(reminderToEdit); //TODO finish the update method.
                         return null;
                     }
 
@@ -166,19 +187,8 @@ public class CreateReminderActivity extends AppCompatActivity {
                     }
                 }
                 setScheduledReminder(reminder);
-                new SaveReminderTask().execute();
+                new UpdateReminderTask().execute();
 
-            }
-        });
-    }
-
-
-    private void setImageBackLogic(){
-
-        imageBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
             }
         });
     }
@@ -205,14 +215,14 @@ public class CreateReminderActivity extends AppCompatActivity {
         calendarIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CreateReminderActivity.this, listener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(EditReminderActivity.this, listener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
         calendarText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CreateReminderActivity.this, listener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(EditReminderActivity.this, listener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
     }
@@ -233,16 +243,15 @@ public class CreateReminderActivity extends AppCompatActivity {
         timeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(CreateReminderActivity.this, listener, calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), true).show();
+                new TimePickerDialog(EditReminderActivity.this, listener, calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), true).show();
             }
         });
 
         timeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(CreateReminderActivity.this, listener, calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), true).show();
+                new TimePickerDialog(EditReminderActivity.this, listener, calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), true).show();
             }
         });
     }
-
 }

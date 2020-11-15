@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dontforget.R;
 import com.example.dontforget.activities.CreateReminderActivity;
+import com.example.dontforget.activities.EditReminderActivity;
 import com.example.dontforget.activities.MainActivity;
 import com.example.dontforget.entities.Reminder;
 
@@ -55,10 +56,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CreateReminderActivity.class);
+                Intent intent = new Intent(v.getContext(), EditReminderActivity.class);
                 Bundle args = new Bundle();
-                args.putSerializable("reminderInfo", (Serializable)reminders.get(position));
-                intent.putExtra("REMINDER", args);
+                args.putSerializable("reminderToEdit", (Serializable)reminders.get(position));
+                intent.putExtra("REMINDER_TO_EDIT", args);
                 v.getContext().startActivity(intent);
             }
         });

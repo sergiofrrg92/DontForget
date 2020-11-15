@@ -1,6 +1,7 @@
 package com.example.dontforget.entities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -80,5 +81,24 @@ public class Reminder implements Serializable {
     @Override
     public String toString() {
         return title + " : " + date + ":" + time;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == this)
+            return true;
+        if(!(obj instanceof Reminder))
+            return false;
+        Reminder r = (Reminder)obj;
+
+        if(!r.getTitle().equals(this.title)
+                || !r.getDate().equals(this.date)
+                || !r.getTime().equals(this.time)
+                || !r.getDatetime().equals(this.datetime)
+                || !r.getDescription().equals(this.description)) {
+            return false;
+        }else {
+            return true;
+        }
     }
 }

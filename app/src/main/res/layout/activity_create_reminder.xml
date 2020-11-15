@@ -97,7 +97,7 @@
                     android:src="@drawable/ic_calendar"
                     app:tint="@color/colorIcons" />
 
-                <EditText
+                <TextView
                     android:id="@+id/calendarText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
@@ -105,8 +105,10 @@
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_15sdp"
                     android:includeFontPadding="false"
-                    android:paddingStart="@dimen/_5sdp"
+                    android:paddingStart="@dimen/_6sdp"
+                    android:paddingTop="@dimen/_10sdp"
                     android:fontFamily="@font/ubuntu_medium"
+                    android:textSize="@dimen/_13ssp"
                     android:inputType="datetime"
                     android:hint="@string/insert_date_here"
                     android:textColorHint="@color/colorTextHint"
@@ -138,23 +140,26 @@
                     android:src="@drawable/ic_clock"
                     app:tint="@color/colorIcons" />
 
-                <EditText
+                <TextView
                     android:id="@+id/timeText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:paddingStart="@dimen/_5sdp"
                     android:includeFontPadding="false"
+                    android:paddingStart="@dimen/_6sdp"
+                    android:paddingTop="@dimen/_10sdp"
                     android:fontFamily="@font/ubuntu_medium"
+                    android:textSize="@dimen/_13ssp"
                     android:inputType="datetime"
-                    android:hint="@string/insert_time_here"
+                    android:hint="@string/insert_date_here"
                     android:textColorHint="@color/colorTextHint"
                     android:textColor="@color/white"
                     android:importantForAutofill="no"
                     android:background="@null"
-                    android:imeOptions="actionDone"/>
+                    android:imeOptions="actionDone"
+                    />
 
 
             </LinearLayout>
