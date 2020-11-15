@@ -59,6 +59,8 @@ public class CreateReminderActivity extends AppCompatActivity {
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
+    private Reminder reminderInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,14 @@ public class CreateReminderActivity extends AppCompatActivity {
         reminderTitle = findViewById(R.id.reminderTitle);
 
         datetime = "";
+
+        Intent receivedIntent = getIntent();
+        Bundle args = receivedIntent.getBundleExtra("REMINDER");
+
+        if(args != null){
+            reminderInfo = (Reminder) args.getSerializable("reminderInfo"); //TODO CONTINUE
+        }
+
 
         createNotificationChannel();
         setImageBackLogic();
@@ -106,7 +116,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         }
     }
 
-    private void setScheduledReminder(Reminder reminder) {   //TODO: This notifiTcation system needs to be scheduled, a new layout and activitiy for reminder details and must be created
+    private void setScheduledReminder(Reminder reminder) {
 
         alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderBroadcastReceiver.class);

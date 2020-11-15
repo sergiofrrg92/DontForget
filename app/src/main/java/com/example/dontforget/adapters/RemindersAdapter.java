@@ -1,6 +1,7 @@
 package com.example.dontforget.adapters;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.dontforget.entities.Reminder;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -50,6 +52,17 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     @Override
     public void onBindViewHolder(@NonNull RemindersAdapter.ReminderViewHolder holder, int position) {
         holder.setReminder(reminders.get(position));
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), CreateReminderActivity.class);
+                Bundle args = new Bundle();
+                args.putSerializable("reminderInfo", (Serializable)reminders.get(position));
+                intent.putExtra("REMINDER", args);
+                v.getContext().startActivity(intent);
+            }
+        });
+
     }
 
     @Override
