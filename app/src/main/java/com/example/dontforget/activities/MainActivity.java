@@ -16,30 +16,31 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.dontforget.R;
-import com.example.dontforget.adapters.NotesAdapter;
 import com.example.dontforget.adapters.RemindersAdapter;
-import com.example.dontforget.database.NotesDatabase;
 import com.example.dontforget.database.RemindersDatabase;
-import com.example.dontforget.entities.Note;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.listeners.RemindersListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RemindersListener {
 
     public static final int REQUEST_CODE_ADD_REMINDER = 1;
+    public static final int REQUEST_CODE_EDIT_REMINDER = 2;
 
     private RecyclerView remindersRecyclerView;
 
     private List<Reminder> reminderList;
     private RemindersAdapter remindersAdapter;
 
+    private int reminderClickedPosition = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        deleteAllReminders();
+        //deleteAllReminders();
         //deleteOverdueReminders();
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
@@ -53,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         reminderList= new ArrayList<>();
-        remindersAdapter = new RemindersAdapter(reminderList);
+        remindersAdapter = new RemindersAdapter(reminderList, this);
         remindersRecyclerView.setAdapter(remindersAdapter);
 
-        getReminders();
+        getReminders(REQUEST_CODE_EDIT_REMINDER);
 
         addSearchFunctionality();
 
@@ -66,8 +67,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_ADD_REMINDER && resultCode == RESULT_OK){
-            getReminders();
+            getReminders(REQUEST_CODE_ADD_REMINDER);
+        }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_OK){
+            getReminders(REQUEST_CODE_EDIT_REMINDER);
         }
+    }
+
+    @Override
+    public void onReminderClicked(Reminder reminder, int position) {
+        reminderClickedPosition = position;
+        Intent intent = new Intent(getApplicationContext(), EditReminderActivity.class);
+        intent.putExtra("REMINDER_TO_EDIT", reminder);
+        startActivityForResult(intent, REQUEST_CODE_EDIT_REMINDER);
     }
 
     private void deleteOverdueReminders() {
@@ -104,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getReminders(){
+    private void getReminders(int requestCode){
         @SuppressLint("StaticFieldLeak")
         class GetRemindersTask extends AsyncTask<Void, Void, List<Reminder>> {
             @Override
@@ -115,14 +126,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(List<Reminder> reminders) {
                 super.onPostExecute(reminders);
-                if(reminderList.size() == 0){
-                    reminderList.addAll(reminders);
-                    remindersAdapter.notifyDataSetChanged();
-                }else{
-                    reminderList.add(0, reminders.get(0));
-                    remindersAdapter.notifyItemInserted(0);
+                if(requestCode == REQUEST_CODE_ADD_REMINDER){
+                    if(reminderList.size() == 0){
+                        reminderList.addAll(reminders);
+                        remindersAdapter.notifyDataSetChanged();
+                        remindersRecyclerView.smoothScrollToPosition(0);
+                    }else{
+                        reminderList.add(0, reminders.get(0));
+                        remindersAdapter.notifyItemInserted(0);
+                        remindersRecyclerView.smoothScrollToPosition(0);
+                    }
+                }else if (requestCode == REQUEST_CODE_EDIT_REMINDER){
+                    remindersAdapter.notifyItemChanged(reminderClickedPosition);
                 }
-                remindersRecyclerView.smoothScrollToPosition(0);
+
             }
         }
 
@@ -150,4 +167,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

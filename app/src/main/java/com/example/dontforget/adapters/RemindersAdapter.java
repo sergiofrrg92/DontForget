@@ -1,33 +1,25 @@
 package com.example.dontforget.adapters;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dontforget.R;
-import com.example.dontforget.activities.CreateReminderActivity;
-import com.example.dontforget.activities.EditReminderActivity;
-import com.example.dontforget.activities.MainActivity;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.listeners.RemindersListener;
 
-import org.w3c.dom.Text;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> {
 
@@ -35,9 +27,12 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     private Timer timer;
     private List<Reminder> originReminders;
 
-    public RemindersAdapter(List<Reminder> reminders){
+    private RemindersListener remindersListener;
+
+    public RemindersAdapter(List<Reminder> reminders, RemindersListener remindersListener){
         this.reminders = reminders;
         this.originReminders = reminders;
+        this.remindersListener = remindersListener;
     }
 
     @NonNull
@@ -56,11 +51,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), EditReminderActivity.class);
-                Bundle args = new Bundle();
-                args.putSerializable("reminderToEdit", (Serializable)reminders.get(position));
-                intent.putExtra("REMINDER_TO_EDIT", args);
-                v.getContext().startActivity(intent);
+                remindersListener.onReminderClicked(reminders.get(position), position);
             }
         });
 

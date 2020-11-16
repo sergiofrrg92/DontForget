@@ -76,14 +76,8 @@ public class EditReminderActivity extends AppCompatActivity {
         datetime = "";
 
         Intent receivedIntent = getIntent();
-        Bundle args = receivedIntent.getBundleExtra("REMINDER_TO_EDIT");
 
-        if(args == null){
-            Toast.makeText(this, "Reminder information cannot be retrieved", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        reminderToEdit = (Reminder) args.getSerializable("reminderToEdit");
+        reminderToEdit = (Reminder) receivedIntent.getSerializableExtra("REMINDER_TO_EDIT");
 
         reminderTitle.setText(reminderToEdit.getTitle());
         calendarText.setText(reminderToEdit.getDate());
@@ -167,14 +161,14 @@ public class EditReminderActivity extends AppCompatActivity {
                     finish();
                 }
 
-                reminderToEdit = reminder;
+                reminder.setId(reminderToEdit.getId());
 
                 @SuppressLint("StaticFieldLeak")
                 class UpdateReminderTask extends AsyncTask<Void, Void, Void> {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().updateReminder(reminderToEdit); //TODO finish the update method.
+                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().updateReminder(reminder); //TODO finish the update method.
                         return null;
                     }
 
