@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
         remindersAdapter = new RemindersAdapter(reminderList, this);
         remindersRecyclerView.setAdapter(remindersAdapter);
 
-        getReminders(REQUEST_CODE_EDIT_REMINDER);
+        getReminders(REQUEST_CODE_ADD_REMINDER);
 
         addSearchFunctionality();
 
