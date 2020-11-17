@@ -134,9 +134,12 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
                     }else{
                         reminderList.add(0, reminders.get(0));
                         remindersAdapter.notifyItemInserted(0);
+                        remindersAdapter.notifyItemRangeChanged(1, reminderList.size()-1);
                         remindersRecyclerView.smoothScrollToPosition(0);
                     }
                 }else if (requestCode == REQUEST_CODE_EDIT_REMINDER){
+                    reminderList.remove(reminderClickedPosition);
+                    reminderList.add(reminderClickedPosition, reminders.get(reminderClickedPosition));
                     remindersAdapter.notifyItemChanged(reminderClickedPosition);
                 }
 
