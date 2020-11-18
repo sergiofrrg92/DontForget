@@ -19,8 +19,8 @@ alarm apps, that allow you to add a label to the alarm so you can read it when i
 
 Those are all proxy reminders, applications that, as a side effect, can help you remember something, but I don't want that.
 
-** I just want to create a reminder **
+**I just want to create a reminder**
 
-And that's what ** Don't Forget it!! ** does.
+And that's what **Don't Forget it!!** does.
 
-** Create a reminder **
+**Create a reminder**
