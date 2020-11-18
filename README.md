@@ -3,10 +3,10 @@
 Don't Forget it!! is a persistent reminder app that focuses solely on making sure the user doesn't miss something important.
 
 It tries to satisfy the need (or at least, my need), to avoid forgetting those small important things that keep happening on a daily basis like:
- - Don't forget to buy <item>!
- - Don't forget to call <person>!
- - Don't forget to pick <something> up from the mailroom!
- - Don't forget to wish a happy birthday to <person>
+ - Don't forget to buy "item"!
+ - Don't forget to call "person"!
+ - Don't forget to pick "something" up from the mailroom!
+ - Don't forget to wish a happy birthday to "person"
  
 All those events happen constantly, and my experience is that the default apps on our phones don't quite cover them correctly.
 
