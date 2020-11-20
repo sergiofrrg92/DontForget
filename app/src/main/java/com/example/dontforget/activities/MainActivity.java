@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //deleteAllReminders();
+        deleteAllReminders();
         //deleteOverdueReminders();
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
