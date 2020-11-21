@@ -118,8 +118,9 @@ public class CreateReminderActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putSerializable("reminderInfo", (Serializable)reminder);
         intent.putExtra("REMINDER", args);
-        //int alarmId =Integer.parseInt(reminder.getDatetime().replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
+                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
+        alarmIntent = PendingIntent.getBroadcast(this, alarmId, intent, 0);
 
         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
