@@ -48,6 +48,7 @@ public class EditReminderActivity extends AppCompatActivity {
 
     private EditText reminderTitle;
 
+    private int previousNotificationId;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
@@ -87,6 +88,10 @@ public class EditReminderActivity extends AppCompatActivity {
             reminderDescription.setText(reminderToEdit.getDescription());
         }
 
+        previousNotificationId = Integer.parseInt(reminderToEdit.getDatetime().substring(reminderToEdit.getDatetime().indexOf("-"))
+                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
+
+
         setCalendar();  //To make sure the comparison is correct at update time
 
         setImageBackLogic();
@@ -119,14 +124,23 @@ public class EditReminderActivity extends AppCompatActivity {
         });
     }
 
+    private void cancelPreviousReminder(){
+        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(this, previousNotificationId, intent, 0);
+        alarmMgr.cancel(alarmIntent);
+    }
+
     private void setScheduledReminder(Reminder reminder) {
 
         alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+        cancelPreviousReminder();
         Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
         Bundle args = new Bundle();
         args.putSerializable("reminderInfo", (Serializable)reminder);
         intent.putExtra("REMINDER", args);
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
+                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
+        alarmIntent = PendingIntent.getBroadcast(this, alarmId, intent, 0);
 
         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
