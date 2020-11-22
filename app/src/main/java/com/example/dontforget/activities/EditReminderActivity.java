@@ -81,6 +81,7 @@ public class EditReminderActivity extends AppCompatActivity {
         datetime = "";
 
         Intent receivedIntent = getIntent();
+        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
 
         reminderToEdit = (Reminder) receivedIntent.getSerializableExtra("REMINDER_TO_EDIT");
 
@@ -137,7 +138,6 @@ public class EditReminderActivity extends AppCompatActivity {
 
     private void setScheduledReminder(Reminder reminder) {
 
-        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
         cancelPreviousReminder();
         Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
         Bundle args = new Bundle();
@@ -191,7 +191,7 @@ public class EditReminderActivity extends AppCompatActivity {
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         Intent intent = new Intent();
-                        setResult(RESULT_OK, intent);
+                        setResult(RESULT_CANCELED, intent);
                         finish();
                     }
                 }

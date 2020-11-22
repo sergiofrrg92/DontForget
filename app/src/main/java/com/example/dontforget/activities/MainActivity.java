@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     public static final int REQUEST_CODE_ADD_REMINDER = 1;
     public static final int REQUEST_CODE_EDIT_REMINDER = 2;
+    public static final int REQUEST_CODE_DELETE_REMINDER = 3;
 
     private RecyclerView remindersRecyclerView;
 
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             getReminders(REQUEST_CODE_ADD_REMINDER);
         }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_OK){
             getReminders(REQUEST_CODE_EDIT_REMINDER);
+        }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_CANCELED){
+            getReminders(REQUEST_CODE_DELETE_REMINDER);
         }
     }
 
@@ -141,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
                     reminderList.remove(reminderClickedPosition);
                     reminderList.add(reminderClickedPosition, reminders.get(reminderClickedPosition));
                     remindersAdapter.notifyItemChanged(reminderClickedPosition);
+                }else if(requestCode == REQUEST_CODE_DELETE_REMINDER){
+                    reminderList.remove(reminderClickedPosition);
+                    remindersAdapter.notifyItemRemoved(reminderClickedPosition);
                 }
 
             }
