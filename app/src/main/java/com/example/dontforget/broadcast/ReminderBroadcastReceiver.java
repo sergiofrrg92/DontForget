@@ -11,6 +11,8 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.dontforget.R;
 import com.example.dontforget.entities.Reminder;
 
+import java.util.Random;
+
 public class ReminderBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,8 +26,10 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
                 .setContentText(reminder.getDescription())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
+        Random randomId = new Random();
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        notificationManager.notify(200, builder.build());
+        notificationManager.notify(randomId.nextInt(9999 - 1000) + 1000, builder.build());
     }
 }
