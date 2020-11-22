@@ -54,6 +54,8 @@ public class CreateReminderActivity extends AppCompatActivity {
     private ImageView timeIcon;
     private TextView timeText;
 
+    private ImageView deleteIcon;
+
     private final Calendar calendar = Calendar.getInstance();
 
     private EditText reminderTitle;
@@ -79,6 +81,8 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         timeIcon = findViewById(R.id.timeIcon);
         timeText = findViewById(R.id.timeText);
+
+        deleteIcon = findViewById(R.id.deleteIcon);
 
         timeText.setShowSoftInputOnFocus(false);
 
@@ -180,6 +184,13 @@ public class CreateReminderActivity extends AppCompatActivity {
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        deleteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 onBackPressed();
             }
         });

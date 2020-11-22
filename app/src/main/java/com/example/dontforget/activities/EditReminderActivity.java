@@ -44,6 +44,8 @@ public class EditReminderActivity extends AppCompatActivity {
     private ImageView timeIcon;
     private TextView timeText;
 
+    private ImageView deleteIcon;
+
     private final Calendar calendar = Calendar.getInstance();
 
     private EditText reminderTitle;
@@ -74,6 +76,8 @@ public class EditReminderActivity extends AppCompatActivity {
 
         reminderTitle = findViewById(R.id.reminderTitle);
 
+        deleteIcon = findViewById(R.id.deleteIcon);
+
         datetime = "";
 
         Intent receivedIntent = getIntent();
@@ -98,6 +102,7 @@ public class EditReminderActivity extends AppCompatActivity {
         setDatePickerLogic();
         setTimePickerLogic();
         setUpdateLogic();
+        setDeleteLogic();
     }
 
     private void setCalendar(){
@@ -146,6 +151,58 @@ public class EditReminderActivity extends AppCompatActivity {
 
     }
 
+    private void setDeleteLogic() {
+        //cancelPreviousReminder();
+        deleteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (reminderTitle.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(EditReminderActivity.this, "Reminder title can't be empty!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(EditReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Reminder reminder = new Reminder();
+
+                datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        .format(calendar.getTime());
+
+                reminder.setTitle(reminderTitle.getText().toString());
+                reminder.setDate(calendarText.getText().toString());
+                reminder.setTime(timeText.getText().toString());
+                reminder.setDatetime(datetime);
+                reminder.setDescription(reminderDescription.getText().toString());
+
+                reminder.setId(reminderToEdit.getId());
+
+                @SuppressLint("StaticFieldLeak")
+                class DeleteReminderTask extends AsyncTask<Void, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteReminder(reminder);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }
+                cancelPreviousReminder();
+                new DeleteReminderTask().execute();
+
+
+            }
+        });
+    }
+
     private void setUpdateLogic() {
         ImageView imageSave = findViewById(R.id.imageSave);
         imageSave.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +239,7 @@ public class EditReminderActivity extends AppCompatActivity {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().updateReminder(reminder); //TODO finish the update method.
+                        RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().updateReminder(reminder);
                         return null;
                     }
 
