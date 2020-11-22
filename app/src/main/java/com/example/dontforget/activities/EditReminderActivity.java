@@ -56,6 +56,8 @@ public class EditReminderActivity extends AppCompatActivity {
 
     private Reminder reminderToEdit;
 
+    private final static int RESULT_DELETED = -2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +193,7 @@ public class EditReminderActivity extends AppCompatActivity {
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         Intent intent = new Intent();
-                        setResult(RESULT_CANCELED, intent);
+                        setResult(RESULT_DELETED, intent);
                         finish();
                     }
                 }
