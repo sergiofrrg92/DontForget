@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DontForget">
-        <activity android:name=".activities.EditReminderActivity"></activity>
-        <activity android:name=".activities.CreateReminderActivity" />
+        <activity
+            android:name=".activities.EditReminderActivity"
+            android:parentActivityName=".activities.MainActivity"></activity>
+        <activity
+            android:name=".activities.CreateReminderActivity"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.CreateNoteActivity"
             android:screenOrientation="portrait"
