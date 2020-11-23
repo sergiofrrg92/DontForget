@@ -32,9 +32,12 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"ReminderChannel")
                 .setSmallIcon(R.drawable.ic_clock)
-                .setContentTitle("Don´t forget it!: " + reminder.getTitle())
-                .setContentText(reminder.getDescription())
+                .setContentTitle("Don´t forget it!: "+ reminder.getTitle())
+                .setContentText(reminder.getDate()+"\n"
+                        +reminder.getTime()+"\n"
+                        +reminder.getDescription())
                 .setContentIntent(resultPendingIntent)
+                .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         Random randomId = new Random();

@@ -250,10 +250,10 @@ public class EditReminderActivity extends AppCompatActivity {
                         super.onPostExecute(aVoid);
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
+                        setScheduledReminder(reminder);
                         finish();
                     }
                 }
-                setScheduledReminder(reminder);
                 new UpdateReminderTask().execute();
 
             }

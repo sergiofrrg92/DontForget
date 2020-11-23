@@ -6,8 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,11 +22,16 @@ import android.widget.ImageView;
 
 import com.example.dontforget.R;
 import com.example.dontforget.adapters.RemindersAdapter;
+import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
 import com.example.dontforget.listeners.RemindersListener;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RemindersListener {
@@ -38,10 +48,16 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     private int reminderClickedPosition = -1;
 
+    private AlarmManager alarmMgr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
+
+        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+
         //deleteAllReminders();
         //deleteOverdueReminders();
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
@@ -65,6 +81,47 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        //taken from https://developer.android.com/training/notify-user/build-notification?hl=en#java
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH; //Should this be a parameter inserted by the user?
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void updateNotificationsForAddedReminder(Reminder reminder) {
+
+
+        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
+        Bundle args = new Bundle();
+        args.putSerializable("reminderInfo", (Serializable)reminder);
+        intent.putExtra("REMINDER", args);
+        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
+                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, reminder.getId(), intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            calendar.setTime(sdf.parse(reminder.getDatetime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -75,7 +132,10 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
         }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_DELETED){
             getReminders(REQUEST_CODE_DELETE_REMINDER);
         }
+        
+
     }
+
 
     @Override
     public void onReminderClicked(Reminder reminder, int position) {
