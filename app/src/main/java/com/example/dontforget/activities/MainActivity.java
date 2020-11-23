@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             }
         });
 
-        remindersRecyclerView = findViewById(R.id.notesRecyclerView);
+        remindersRecyclerView = findViewById(R.id.remindersRecyclerView);
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         reminderList= new ArrayList<>();
