@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
         alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
 
-        //deleteAllReminders();
-        //deleteOverdueReminders();
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,29 +94,6 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    private void updateNotificationsForAddedReminder(Reminder reminder) {
-
-
-        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminderInfo", (Serializable)reminder);
-        intent.putExtra("REMINDER", args);
-        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
-                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, reminder.getId(), intent, 0);
-
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            calendar.setTime(sdf.parse(reminder.getDatetime()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-
-
     }
 
 
