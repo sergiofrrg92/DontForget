@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/_12sdp"
     android:layout_marginTop="@dimen/_12sdp"
-    android:background="@drawable/background_note">
+    android:background="@drawable/background_reminder">
 
     <TextView
         android:id="@+id/reminderTitle"
@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/_4sdp"
         android:fontFamily="@font/ubuntu_regular"
         android:includeFontPadding="false"
-        android:textColor="@color/colorNoteSubtitleText"
+        android:textColor="@color/colorReminderSubtitleText"
         android:textSize="@dimen/_12sdp"/>
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_marginBottom="@dimen/_8sdp"
         android:fontFamily="@font/ubuntu_regular"
         android:includeFontPadding="false"
-        android:textColor="@color/colorNoteSubtitleText"
+        android:textColor="@color/colorReminderSubtitleText"
         android:textSize="@dimen/_12ssp"/>
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_marginBottom="@dimen/_8sdp"
         android:fontFamily="@font/ubuntu_regular"
         android:includeFontPadding="false"
-        android:textColor="@color/colorNoteSubtitleText"
+        android:textColor="@color/colorReminderSubtitleText"
         android:textSize="@dimen/_12ssp"/>
 
 

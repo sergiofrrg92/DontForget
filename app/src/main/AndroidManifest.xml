@@ -16,10 +16,6 @@
             android:name=".activities.CreateReminderActivity"
             android:parentActivityName=".activities.MainActivity"/>
         <activity
-            android:name=".activities.CreateNoteActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">

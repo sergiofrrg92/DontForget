@@ -15,13 +15,8 @@
     <color name="colorQuickActionsBackground">#2F2D2E</color>
     <color name="colorIcons">#A4A4A4</color>
     <color name="colorTextSubtitle">#CECECE</color>
-    <color name="colorDefaultNoteColor">#333333</color>
-    <color name="colorNoteSubtitleText">#FAFAFA</color>
-    <color name="colorMiscellaneousBackground">#1F1F1F</color>
-    <color name="colorNoteColor2">#FDBE3B</color>
-    <color name="colorNoteColor3">#FF4842</color>
-    <color name="colorNoteColor4">#3A42FC</color>
-    <color name="colorNoteColor5">#000000</color>
+    <color name="colorDefaultReminderColor">#333333</color>
+    <color name="colorReminderSubtitleText">#FAFAFA</color>
     <color name="colorDelete">#FF4842</color>
     <color name="colorSearchBackground">#333333</color>
 </resources>

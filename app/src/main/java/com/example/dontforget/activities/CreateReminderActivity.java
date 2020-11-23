@@ -1,29 +1,20 @@
 package com.example.dontforget.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.example.dontforget.R;
 import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
-import com.example.dontforget.database.NotesDatabase;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -33,11 +24,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class CreateReminderActivity extends AppCompatActivity {
