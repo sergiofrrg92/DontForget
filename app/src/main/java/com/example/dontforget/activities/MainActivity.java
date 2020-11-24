@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,17 +22,12 @@ import android.widget.ImageView;
 
 import com.example.dontforget.R;
 import com.example.dontforget.adapters.RemindersAdapter;
-import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.callbacks.SwipeToDeleteCallback;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
 import com.example.dontforget.listeners.RemindersListener;
 
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RemindersListener {
@@ -51,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     private int reminderClickedPosition = -1;
 
     private AlarmManager alarmMgr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
         createNotificationChannel();
 
-        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+        alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
 
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             }
         });
 
-       setUpRecyclerView();
+        setUpRecyclerView();
 
         getReminders(REQUEST_CODE_ADD_REMINDER);
 
@@ -76,11 +71,11 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     }
 
-    public void setUpRecyclerView(){
+    public void setUpRecyclerView() {
         remindersRecyclerView = findViewById(R.id.remindersRecyclerView);
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        reminderList= new ArrayList<>();
+        reminderList = new ArrayList<>();
         remindersAdapter = new RemindersAdapter(reminderList, this);
         remindersRecyclerView.setAdapter(remindersAdapter);
 
@@ -109,14 +104,14 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_ADD_REMINDER && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE_ADD_REMINDER && resultCode == RESULT_OK) {
             getReminders(REQUEST_CODE_ADD_REMINDER);
-        }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_OK){
+        } else if (requestCode == REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_OK) {
             getReminders(REQUEST_CODE_EDIT_REMINDER);
-        }else if(requestCode==REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_DELETED){
+        } else if (requestCode == REQUEST_CODE_EDIT_REMINDER && resultCode == RESULT_DELETED) {
             getReminders(REQUEST_CODE_DELETE_REMINDER);
         }
-        
+
 
     }
 
@@ -171,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     }
 
 
-    private void deleteAllReminders(){
+    private void deleteAllReminders() {
         @SuppressLint("StaticFieldLeak")
         class DeleteRemindersTask extends AsyncTask<Void, Void, Void> {
 
@@ -188,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     }
 
 
-    private void getReminders(int requestCode){
+    private void getReminders(int requestCode) {
         @SuppressLint("StaticFieldLeak")
         class GetRemindersTask extends AsyncTask<Void, Void, List<Reminder>> {
             @Override
@@ -199,22 +194,22 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             @Override
             protected void onPostExecute(List<Reminder> reminders) {
                 super.onPostExecute(reminders);
-                if(requestCode == REQUEST_CODE_ADD_REMINDER){
-                    if(reminderList.size() == 0){
+                if (requestCode == REQUEST_CODE_ADD_REMINDER) {
+                    if (reminderList.size() == 0) {
                         reminderList.addAll(reminders);
                         remindersAdapter.notifyDataSetChanged();
                         remindersRecyclerView.smoothScrollToPosition(0);
-                    }else{
+                    } else {
                         reminderList.add(0, reminders.get(0));
                         remindersAdapter.notifyItemInserted(0);
-                        remindersAdapter.notifyItemRangeChanged(1, reminderList.size()-1);
+                        remindersAdapter.notifyItemRangeChanged(1, reminderList.size() - 1);
                         remindersRecyclerView.smoothScrollToPosition(0);
                     }
-                }else if (requestCode == REQUEST_CODE_EDIT_REMINDER){
+                } else if (requestCode == REQUEST_CODE_EDIT_REMINDER) {
                     reminderList.remove(reminderClickedPosition);
                     reminderList.add(reminderClickedPosition, reminders.get(reminderClickedPosition));
                     remindersAdapter.notifyItemChanged(reminderClickedPosition);
-                }else if(requestCode == REQUEST_CODE_DELETE_REMINDER){
+                } else if (requestCode == REQUEST_CODE_DELETE_REMINDER) {
                     reminderList.remove(reminderClickedPosition);
                     remindersAdapter.notifyItemRemoved(reminderClickedPosition);
                     remindersAdapter.notifyDataSetChanged();
@@ -227,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     }
 
-    private void addSearchFunctionality(){
+    private void addSearchFunctionality() {
         EditText inputSearch = findViewById(R.id.inputSearch);
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -242,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(reminderList.size()>0)
+                if (reminderList.size() > 0)
                     remindersAdapter.searchReminders(editable.toString());
             }
         });

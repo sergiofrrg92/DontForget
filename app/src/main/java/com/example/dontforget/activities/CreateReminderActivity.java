@@ -30,22 +30,16 @@ import java.util.Locale;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
+    private final Calendar calendar = Calendar.getInstance();
     private ImageView imageBack;
     //Elements in the layout
     private ImageView calendarIcon;
     private TextView calendarText;
-
     private EditText reminderDescription;
-
     private String datetime;
-
     private ImageView timeIcon;
     private TextView timeText;
-
     private ImageView deleteIcon;
-
-    private final Calendar calendar = Calendar.getInstance();
-
     private EditText reminderTitle;
 
     private AlarmManager alarmMgr;
