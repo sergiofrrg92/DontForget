@@ -2,6 +2,7 @@ package com.example.dontforget.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import com.example.dontforget.R;
 import com.example.dontforget.adapters.RemindersAdapter;
 import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
+import com.example.dontforget.callbacks.SwipeToDeleteCallback;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
 import com.example.dontforget.listeners.RemindersListener;
@@ -66,6 +68,15 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
             }
         });
 
+       setUpRecyclerView();
+
+        getReminders(REQUEST_CODE_ADD_REMINDER);
+
+        addSearchFunctionality();
+
+    }
+
+    public void setUpRecyclerView(){
         remindersRecyclerView = findViewById(R.id.remindersRecyclerView);
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -73,10 +84,8 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
         remindersAdapter = new RemindersAdapter(reminderList, this);
         remindersRecyclerView.setAdapter(remindersAdapter);
 
-        getReminders(REQUEST_CODE_ADD_REMINDER);
-
-        addSearchFunctionality();
-
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(remindersAdapter, this));
+        itemTouchHelper.attachToRecyclerView(remindersRecyclerView);
     }
 
     private void createNotificationChannel() {
@@ -120,6 +129,30 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
         startActivityForResult(intent, REQUEST_CODE_EDIT_REMINDER);
     }
 
+    @Override
+    public void deleteReminder(int position) {
+        @SuppressLint("StaticFieldLeak")
+        class DeleteReminderTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteReminder(reminderList.get(position));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                reminderList.remove(position);
+                remindersAdapter.notifyItemRemoved(position);
+                remindersAdapter.notifyDataSetChanged();
+            }
+
+        }
+
+        new DeleteReminderTask().execute();
+    }
+
     private void deleteOverdueReminders() {
         @SuppressLint("StaticFieldLeak")
         class DeleteOverdueRemindersTask extends AsyncTask<Void, Void, Void> {
@@ -129,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
                 RemindersDatabase.getRemindersDatabase(getApplicationContext()).reminderDao().deleteOverdueReminders();
                 return null;
             }
+
 
         }
 

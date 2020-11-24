@@ -4,4 +4,6 @@ import com.example.dontforget.entities.Reminder;
 
 public interface RemindersListener {
     void onReminderClicked(Reminder reminder, int position);
+
+    void deleteReminder(int position);
 }

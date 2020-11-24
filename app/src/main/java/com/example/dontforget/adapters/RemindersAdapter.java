@@ -1,16 +1,19 @@
 package com.example.dontforget.adapters;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dontforget.R;
+import com.example.dontforget.activities.CreateReminderActivity;
 import com.example.dontforget.entities.Reminder;
 import com.example.dontforget.listeners.RemindersListener;
 
@@ -28,6 +31,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     private List<Reminder> originReminders;
 
     private RemindersListener remindersListener;
+
 
     public RemindersAdapter(List<Reminder> reminders, RemindersListener remindersListener){
         this.reminders = reminders;
@@ -63,6 +67,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     }
 
 
+    public void deleteReminder(int position)
+    {
+        remindersListener.deleteReminder(position);
+    }
     //I need to understand this
     public void searchReminders(String keyword){
         timer = new Timer();
@@ -95,6 +103,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         if(timer!=null)
             timer.cancel();
     }
+
 
     public class ReminderViewHolder extends RecyclerView.ViewHolder {
 
