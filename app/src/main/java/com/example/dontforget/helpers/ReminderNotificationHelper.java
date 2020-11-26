@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.entities.Reminder;
 
 import java.io.Serializable;

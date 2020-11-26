@@ -22,9 +22,12 @@ import android.widget.ImageView;
 
 import com.example.dontforget.R;
 import com.example.dontforget.adapters.RemindersAdapter;
+import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.callbacks.SwipeToDeleteCallback;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.helpers.ReminderHelper;
+import com.example.dontforget.helpers.ReminderNotificationHelper;
 import com.example.dontforget.listeners.RemindersListener;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
     private int reminderClickedPosition = -1;
 
     private AlarmManager alarmMgr;
+    private ReminderNotificationHelper r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
         setContentView(R.layout.activity_main);
 
         createNotificationChannel();
-
-        alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        r = new ReminderNotificationHelper(this, ReminderBroadcastReceiver.class);
 
         ImageView imageAddReminderMain = findViewById(R.id.imageAddReminderMain);
         imageAddReminderMain.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
 
     @Override
     public void deleteReminder(int position) {
+
+        int previousNotificationId = ReminderHelper.getPreviousNotificationId(reminderList.get(position));
         @SuppressLint("StaticFieldLeak")
         class DeleteReminderTask extends AsyncTask<Void, Void, Void> {
 
@@ -141,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements RemindersListener
                 reminderList.remove(position);
                 remindersAdapter.notifyItemRemoved(position);
                 remindersAdapter.notifyDataSetChanged();
+                r.cancelPreviousReminder(previousNotificationId);
             }
 
         }

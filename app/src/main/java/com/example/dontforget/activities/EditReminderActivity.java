@@ -22,6 +22,7 @@ import com.example.dontforget.R;
 import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.helpers.ReminderHelper;
 import com.example.dontforget.helpers.ReminderNotificationHelper;
 
 import java.io.Serializable;
@@ -86,8 +87,7 @@ public class EditReminderActivity extends AppCompatActivity {
             reminderDescription.setText(reminderToEdit.getDescription());
         }
 
-        previousNotificationId = Integer.parseInt(reminderToEdit.getDatetime().substring(reminderToEdit.getDatetime().indexOf("-"))
-                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
+        previousNotificationId = ReminderHelper.getPreviousNotificationId(reminderToEdit);
 
         r = new ReminderNotificationHelper(this, ReminderBroadcastReceiver.class);
 
