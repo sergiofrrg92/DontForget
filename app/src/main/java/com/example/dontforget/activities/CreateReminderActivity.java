@@ -6,6 +6,7 @@ import com.example.dontforget.R;
 import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.helpers.ReminderNotificationHelper;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -42,10 +43,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     private ImageView deleteIcon;
     private EditText reminderTitle;
 
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
-
-    private Reminder reminderInfo;
+    private ReminderNotificationHelper r;
 
 
     @Override
@@ -72,6 +70,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
         datetime = "";
 
+        r = new ReminderNotificationHelper(this, ReminderBroadcastReceiver.class);
 
         setImageBackLogic();
         setDatePickerLogic();
@@ -83,18 +82,7 @@ public class CreateReminderActivity extends AppCompatActivity {
 
 
     private void setScheduledReminder(Reminder reminder) {
-
-        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminderInfo", (Serializable)reminder);
-        intent.putExtra("REMINDER", args);
-        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
-                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
-        alarmIntent = PendingIntent.getBroadcast(this, alarmId, intent, 0);
-
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-
+        r.setNotification(reminder, calendar);
     }
 
     private void setSaveLogic() {

@@ -22,6 +22,7 @@ import com.example.dontforget.R;
 import com.example.dontforget.broadcast.ReminderBroadcastReceiver;
 import com.example.dontforget.database.RemindersDatabase;
 import com.example.dontforget.entities.Reminder;
+import com.example.dontforget.helpers.ReminderNotificationHelper;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -45,9 +46,9 @@ public class EditReminderActivity extends AppCompatActivity {
     private ImageView deleteIcon;
     private EditText reminderTitle;
     private int previousNotificationId;
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
     private Reminder reminderToEdit;
+
+    private ReminderNotificationHelper r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,6 @@ public class EditReminderActivity extends AppCompatActivity {
         datetime = "";
 
         Intent receivedIntent = getIntent();
-        alarmMgr = (AlarmManager)this.getSystemService(ALARM_SERVICE);
 
         reminderToEdit = (Reminder) receivedIntent.getSerializableExtra("REMINDER_TO_EDIT");
 
@@ -89,6 +89,7 @@ public class EditReminderActivity extends AppCompatActivity {
         previousNotificationId = Integer.parseInt(reminderToEdit.getDatetime().substring(reminderToEdit.getDatetime().indexOf("-"))
                 .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
 
+        r = new ReminderNotificationHelper(this, ReminderBroadcastReceiver.class);
 
         setCalendar();  //To make sure the comparison is correct at update time
 
@@ -124,28 +125,15 @@ public class EditReminderActivity extends AppCompatActivity {
     }
 
     private void cancelPreviousReminder(){
-        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(this, previousNotificationId, intent, 0);
-        alarmMgr.cancel(alarmIntent);
+        r.cancelPreviousReminder(previousNotificationId);
     }
 
     private void setScheduledReminder(Reminder reminder) {
-
-        cancelPreviousReminder();
-        Intent intent = new Intent(this, ReminderBroadcastReceiver.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminderInfo", (Serializable)reminder);
-        intent.putExtra("REMINDER", args);
-        int alarmId =Integer.parseInt(reminder.getDatetime().substring(reminder.getDatetime().indexOf("-"))
-                .replaceAll(" ","").replaceAll(":","").replaceAll("-",""));
-        alarmIntent = PendingIntent.getBroadcast(this, alarmId, intent, 0);
-
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-
+        r.cancelPreviousReminder(previousNotificationId);
+        r.setNotification(reminder, calendar);
     }
 
     private void setDeleteLogic() {
-        //cancelPreviousReminder();
         deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
