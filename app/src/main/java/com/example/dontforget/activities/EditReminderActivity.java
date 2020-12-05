@@ -195,6 +195,9 @@ public class EditReminderActivity extends AppCompatActivity {
                 } else if (calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()) {
                     Toast.makeText(EditReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
                     return;
+                }else if(calendar.getTimeInMillis()<System.currentTimeMillis()){
+                    Toast.makeText(EditReminderActivity.this, "Can´t set up a reminder in the past", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 Reminder reminder = new Reminder();

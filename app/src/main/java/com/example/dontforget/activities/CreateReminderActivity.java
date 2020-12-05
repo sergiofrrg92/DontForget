@@ -96,13 +96,15 @@ public class CreateReminderActivity extends AppCompatActivity {
                 } else if (calendarText.getText().toString().trim().isEmpty() || timeText.getText().toString().trim().isEmpty()) {
                     Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder without date and time!", Toast.LENGTH_SHORT).show();
                     return;
+                }else if(calendar.getTimeInMillis()<System.currentTimeMillis()){
+                    Toast.makeText(CreateReminderActivity.this, "Can´t set up a reminder in the past", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 Reminder reminder = new Reminder();
 
                 datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                         .format(calendar.getTime());
-
                 reminder.setTitle(reminderTitle.getText().toString());
                 reminder.setDate(calendarText.getText().toString());
                 reminder.setTime(timeText.getText().toString());
