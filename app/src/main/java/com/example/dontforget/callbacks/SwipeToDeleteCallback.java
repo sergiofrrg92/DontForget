@@ -28,7 +28,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         this.context = context;
         icon = ContextCompat.getDrawable(context,
                 R.drawable.ic_delete);
-        background = new ColorDrawable(Color.parseColor("#A4A4A4"));
+
+        background = new ColorDrawable(ContextCompat.getColor(context, R.color.colorIcons));
     }
 
     @Override
@@ -71,7 +72,6 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         } else { // view is unSwiped
             background.setBounds(0, 0, 0, 0);
         }
-
         background.draw(c);
         icon.draw(c);
 
